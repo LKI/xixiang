@@ -1,4 +1,5 @@
 # XiXiang 熙香点餐
+[![PyPI](https://img.shields.io/pypi/v/xixiang.svg)](https://pypi.python.org/pypi/xixiang)
 
 **熙香点餐非官方库**
 
