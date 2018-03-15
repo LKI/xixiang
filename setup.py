@@ -5,11 +5,11 @@ from setuptools import setup
 
 import xixiang
 
-with open('README.md', 'rb') as f:
-    long_description = f.read().decode('utf-8')
+with open('README.md', 'rb') as readme_file:
+    long_description = readme_file.read().decode('utf-8')
 
-with open('requirements.txt') as f:
-    requirements = [_.strip() for _ in f.readlines() if _]
+with open('requirements.txt') as requirement_file:
+    requirements = [_.strip() for _ in requirement_file.readlines() if _]
 
 setup(
     name='xixiang',
@@ -21,5 +21,4 @@ setup(
     url='https://github.com/hui-z/xixiang',
     license='MIT License',
     packages=['xixiang'],
-    install_requires=requirements,
 )
