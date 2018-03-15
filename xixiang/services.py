@@ -29,23 +29,47 @@ class XiXiang(object):
     def __init__(self, api_token):
         self.api_token = api_token
 
-    def get_menu(self):
-        return self.get(xixiang.urls.list_menu_url)
+    def get_menus(self):
+        return xixiang.Menu.load(self.get(xixiang.urls.list_menu_url))
 
-    def get_list(self, mt):
-        return self.get(xixiang.urls.list_url, {'mt': mt})
+    def get_businesses(self, menu):
+        return xixiang.Business.load(self.get(xixiang.urls.list_url, {'mt': menu.menu_type}))
 
-    def get_cookbook(self, busid, comid, mt):
-        return self.get(xixiang.urls.cookbook_url, {'busid': busid, 'comid': comid, 'mt': mt})
+    def get_items(self, business, menu):
+        """
+        :type business: xixiang.models.Business
+        :type menu: xixiang.models.Menu
+        """
+        return xixiang.Item.load(self.get(
+            xixiang.urls.cookbook_url,
+            {
+                'busid': business.business_id,
+                'comid': business.company_id,
+                'mt': menu.menu_type,
+            },
+        ))
 
-    def add_item(self, item_id, menu_id, mt, num=1):
+    def add_item(self, item, num=1):
+        """
+        :type item: xixiang.models.Item
+        :type num: int
+        """
         return self.post(
             xixiang.urls.cart_add_url,
-            {'id': item_id, 'menu_id': menu_id, 'mt': mt, 'num': num, 'reserve_date': 'undefined'},
+            {
+                'id': item.item_id,
+                'menu_id': item.menu_id,
+                'mt': item.menu_type,
+                'num': num,
+                'reserve_date': 'undefined',
+            },
         )
 
-    def add_order(self, address_id):
-        return self.post(xixiang.urls.order_add_url, {'address_id': address_id})
+    def get_addresses(self):
+        return xixiang.Address.load(self.get(xixiang.urls.user_address_url))
+
+    def add_order(self, address):
+        return self.post(xixiang.urls.order_add_url, {'address_id': address.address_id})
 
     def get(self, url, params=None):
         """

@@ -22,4 +22,6 @@ cookbook_url = get_url('cookbook')
 
 cart_add_url = get_url('cart', 'add')
 
+user_address_url = get_url('userAddress')
+
 order_add_url = get_url('order', 'add')
