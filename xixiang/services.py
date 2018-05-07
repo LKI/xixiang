@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import http
+import uuid
 
 import requests
 import six
@@ -11,11 +12,12 @@ import xixiang
 
 class XiXiang(object):
     @classmethod
-    def login(cls, phone, password):
+    def login(cls, phone, password, openid=None):
         """
         :rtype: XiXiang
         """
-        response = requests.post(xixiang.urls.login_url, {'phone': phone, 'password': password})
+        openid = openid or uuid.uuid4().hex
+        response = requests.post(xixiang.urls.login_url, {'phone': phone, 'password': password, 'openid': openid})
         if response.status_code == http.HTTPStatus.OK.value:
             data = response.json()
             if data['code'] == 1:
