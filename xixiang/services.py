@@ -21,7 +21,7 @@ class XiXiang(object):
         if response.status_code == http.HTTPStatus.OK.value:
             data = response.json()
             if data['code'] == 1:
-                return cls(data['data'])
+                return cls(data['data']['api_token'])
             else:
                 raise xixiang.XiXiangLoginFail('{} 登录失败：{}'.format(phone, data['message']))
         elif response.status_code == http.HTTPStatus.UNPROCESSABLE_ENTITY.value:
