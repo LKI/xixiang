@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
-
-
 class Model(object):
     @classmethod
     def load(cls, data):
@@ -24,14 +20,14 @@ class Menu(Model):
         return menus
 
     def __repr__(self):
-        return '{} {}'.format(self.menu_type, self.name)
+        return "{} {}".format(self.menu_type, self.name)
 
 
 class Business(Model):
     def __init__(self, data):
-        self.business_id = data['business_id']
-        self.business_name = data['business_name']
-        self.company_id = data['company_id']
+        self.business_id = data["business_id"]
+        self.business_name = data["business_name"]
+        self.company_id = data["company_id"]
         self.raw_data = data
 
     @classmethod
@@ -45,16 +41,16 @@ class Business(Model):
         return businesses
 
     def __repr__(self):
-        return '{} {}'.format(self.business_id, self.business_name)
+        return "{} {}".format(self.business_id, self.business_name)
 
 
 class Item(Model):
     def __init__(self, data):
-        self.item_id = data['id']
-        self.menu_id = data['menu_id']
-        self.menu_type = data['menu_type']
-        self.is_sell = bool(data['is_sell'])
-        self.menu_name = data['cookbook']['menu_name']
+        self.item_id = data["id"]
+        self.menu_id = data["menu_id"]
+        self.menu_type = data["menu_type"]
+        self.is_sell = bool(data["is_sell"])
+        self.menu_name = data["cookbook"]["menu_name"]
         self.raw_data = data
 
     @classmethod
@@ -69,13 +65,13 @@ class Item(Model):
         return businesses
 
     def __repr__(self):
-        return '{} {}'.format(self.item_id, self.menu_name)
+        return "{} {}".format(self.item_id, self.menu_name)
 
 
 class Address(Model):
     def __init__(self, data):
-        self.address_id = data['id']
-        self.address = data['consignee_address']
+        self.address_id = data["id"]
+        self.address = data["consignee_address"]
         self.raw_data = data
 
     @classmethod
@@ -89,4 +85,4 @@ class Address(Model):
         return addresses
 
     def __repr__(self):
-        return '{} {}'.format(self.address_id, self.address)
+        return "{} {}".format(self.address_id, self.address)
