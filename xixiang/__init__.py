@@ -1,5 +1,5 @@
 __author__ = "Lirian Su"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 from . import urls as urls  # NOQA
 from .exceptions import *  # NOQA
