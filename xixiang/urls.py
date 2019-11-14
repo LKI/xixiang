@@ -10,6 +10,8 @@ base = "{}://{}".format(protocol, domain)
 
 login_url = get_url("login")
 
+list_company_url = get_url("list", "company")
+
 list_menu_url = get_url("list", "getMenu")
 
 list_url = get_url("list")

@@ -1,3 +1,4 @@
+import datetime
 import http
 import uuid
 from urllib.parse import urlencode
@@ -27,9 +28,15 @@ class XiXiang(object):
 
     def __init__(self, api_token):
         self.api_token = api_token
+        self.company_id = None
+        self.menu_date = None
 
     def get_menus(self):
-        return xixiang.Menu.load(self.get(xixiang.urls.list_menu_url))
+        self.company_id = self.get(xixiang.urls.list_company_url)[0]["company_id"]
+        self.menu_date = str(datetime.date.today())
+        return xixiang.Menu.load(
+            self.get(xixiang.urls.list_menu_url, params={"menu_date": "2019-11-14", "companyId": 234})
+        )
 
     def get_businesses(self, menu):
         return xixiang.Business.load(self.get(xixiang.urls.list_url, {"mt": menu.menu_type}))
@@ -40,10 +47,7 @@ class XiXiang(object):
         :type menu: xixiang.models.Menu
         """
         return xixiang.Item.load(
-            self.get(
-                xixiang.urls.cookbook_url,
-                {"busid": business.business_id, "comid": business.company_id, "mt": menu.menu_type,},
-            )
+            self.get(xixiang.urls.cookbook_url, {"busid": business.business_id, "mt": menu.menu_type,},)
         )
 
     def add_item(self, item, num=1):
@@ -74,6 +78,10 @@ class XiXiang(object):
         """
         if params is None:
             params = {}
+        if self.company_id:
+            params.setdefault("companyId", self.company_id)
+        if self.menu_date:
+            params.setdefault("menu_date", self.menu_date)
         params["api_token"] = self.api_token
         url = "{}?{}".format(url, urlencode(sorted(params.items())))
         response = requests.get(url)
