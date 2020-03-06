@@ -1,6 +1,6 @@
 # XiXiang 熙香点餐
 [![PyPI](https://img.shields.io/pypi/v/xixiang.svg)](https://pypi.python.org/pypi/xixiang)
-[![Travis](https://img.shields.io/travis/LKI/xixiang.svg)](https://travis-ci.org/LKI/xixiang)
+[![Build](https://github.com/LKI/xixiang/workflows/Build/badge.svg)](https://github.com/LKI/xixiang)
 
 > 支持 Python 3.5+ 的熙香点餐非官方库
 
