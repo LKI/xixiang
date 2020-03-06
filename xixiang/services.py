@@ -31,12 +31,14 @@ class XiXiang(object):
         self.company_id = None
         self.menu_date = None
 
+    def get_companies(self):
+        companies = self.get(xixiang.urls.list_company_url)
+        self.company_id = companies[0]["company_id"]
+        return companies
+
     def get_menus(self):
-        self.company_id = self.get(xixiang.urls.list_company_url)[0]["company_id"]
         self.menu_date = str(datetime.date.today())
-        return xixiang.Menu.load(
-            self.get(xixiang.urls.list_menu_url, params={"menu_date": "2019-11-14", "companyId": 234})
-        )
+        return xixiang.Menu.load(self.get(xixiang.urls.list_menu_url))
 
     def get_businesses(self, menu):
         return xixiang.Business.load(self.get(xixiang.urls.list_url, {"mt": menu.menu_type}))
@@ -47,7 +49,7 @@ class XiXiang(object):
         :type menu: xixiang.models.Menu
         """
         return xixiang.Item.load(
-            self.get(xixiang.urls.cookbook_url, {"busid": business.business_id, "mt": menu.menu_type,},)
+            self.get(xixiang.urls.cookbook_url, {"busid": business.business_id, "mt": menu.menu_type})
         )
 
     def add_item(self, item, num=1):
