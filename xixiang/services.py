@@ -15,7 +15,7 @@ class XiXiang(object):
         :rtype: XiXiang
         """
         openid = openid or uuid.uuid4().hex
-        response = requests.post(xixiang.urls.login_url, {"phone": phone, "password": password, "openid": openid})
+        response = requests.post(xixiang.urls.login_url, data={"phone": phone, "password": password, "openid": openid})
         if response.status_code == http.HTTPStatus.OK.value:
             data = response.json()
             if data["code"] == 1:
@@ -38,6 +38,8 @@ class XiXiang(object):
 
     def get_menus(self):
         self.menu_date = str(datetime.date.today())
+        if not self.company_id:
+            self.get_companies()
         return xixiang.Menu.load(self.get(xixiang.urls.list_menu_url))
 
     def get_businesses(self, menu):
@@ -59,25 +61,52 @@ class XiXiang(object):
         """
         return self.post(
             xixiang.urls.cart_add_url,
-            {
+            json={
                 "id": item.item_id,
                 "menu_id": item.menu_id,
                 "mt": item.menu_type,
                 "num": num,
-                "reserve_date": "undefined",
+                "reserve_date": str(datetime.date.today()),
             },
         )
 
     def get_addresses(self):
         return xixiang.Address.load(self.get(xixiang.urls.user_address_url))
 
-    def add_order(self, address):
-        return self.post(xixiang.urls.order_add_url, {"address_id": address.address_id})
+    def add_order(self, address, menu):
+        return self.post(
+            xixiang.urls.order_add_url,
+            params={
+                "menuType": menu.menu_type,
+                "reserveDate": str(datetime.date.today()),
+                "companyId": self.company_id,
+            },
+            data={"address_id": address.address_id},
+        )
 
     def get(self, url, params=None):
         """
         :rtype: dict
         """
+        url = self._prepare_url(url, params)
+        response = requests.get(url)
+        data = response.json()
+        if data["code"] == 1:
+            return data["data"]
+        raise xixiang.XiXiangRequestError("请求失败：{}".format(data["message"]))
+
+    def post(self, url, *, params=None, data=None, json=None):
+        """
+        :rtype: dict
+        """
+        url = self._prepare_url(url, params)
+        response = requests.post(url, data=data, json=json)
+        data = response.json()
+        if data["code"] == 1:
+            return data["data"]
+        raise xixiang.XiXiangRequestError("请求失败：{}".format(data["message"]))
+
+    def _prepare_url(self, url, params):
         if params is None:
             params = {}
         if self.company_id:
@@ -85,20 +114,4 @@ class XiXiang(object):
         if self.menu_date:
             params.setdefault("menu_date", self.menu_date)
         params["api_token"] = self.api_token
-        url = "{}?{}".format(url, urlencode(sorted(params.items())))
-        response = requests.get(url)
-        data = response.json()
-        if data["code"] == 1:
-            return data["data"]
-        raise xixiang.XiXiangRequestError("请求失败：{}".format(data["message"]))
-
-    def post(self, url, data=None):
-        """
-        :rtype: dict
-        """
-        url = "{}?api_token={}".format(url, self.api_token)
-        response = requests.post(url, data or {})
-        data = response.json()
-        if data["code"] == 1:
-            return data["data"]
-        raise xixiang.XiXiangRequestError("请求失败：{}".format(data["message"]))
+        return "{}?{}".format(url, urlencode(sorted(params.items())))
