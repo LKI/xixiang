@@ -8,7 +8,12 @@ import requests
 import xixiang
 
 
-class XiXiang(object):
+class XiXiang:
+
+    MENU_TYPE_LUNCH = "2"
+    MENU_TYPE_DINNER = "4"
+    ORDER_SUCCESS = "2"
+
     @classmethod
     def login(cls, phone, password, openid=None):
         """
@@ -83,6 +88,9 @@ class XiXiang(object):
             },
             data={"address_id": address.address_id},
         )
+
+    def get_orders(self, status="", page=1):
+        return self.get(xixiang.urls.order_list_url, params={"orderStatus": status, "page": page})
 
     def get(self, url, params=None):
         """
